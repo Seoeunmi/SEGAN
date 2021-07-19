@@ -29,8 +29,8 @@ epochs = config['epochs']
 lamda = config['lamda']
 
 
-training_target_path = config['training_target_path']
 training_source_path = config['training_source_path']
+training_target_path = config['training_target_path']
 
 save_generator_check_point_name = config['save_generator_check_point_name']
 load_generator_check_point_name = config['load_generator_check_point_name']
@@ -141,7 +141,7 @@ def g_train_step(real_audio, noise_audio):
 # load model
 if load_generator_check_point_name != "" and load_discriminator_check_point_name != "":
     saved_epoch = int(load_generator_check_point_name.split('_')[-1])
-    for x, y in train_dataset:
+    for y, x in train_dataset:
         g_train_step(x, y)
         d_train_step(x, y)
         break
@@ -168,6 +168,8 @@ for epoch in range(saved_epoch, saved_epoch+epochs):
     flag, count = 0, 0
     for noise_audio, clean_audio in train_dataset:
         print("\rTrain : epoch {}/{}, training {}/{}".format(epoch + 1, saved_epoch+epochs, i + 1, math.ceil(num_of_total_frame / batch_size)), end='')
+        # d_train_step(clean_audio, noise_audio)
+        # g_train_step(clean_audio, noise_audio)
         if flag == 0:
             d_train_step(clean_audio, noise_audio)
             count += 1

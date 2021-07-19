@@ -1,7 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Conv1D, Conv1DTranspose, Flatten, Dense
 from tensorflow.keras.layers import PReLU, Concatenate, LeakyReLU
-from tensorflow.keras.activations import sigmoid
 from tensorflow.keras import Model
 import os
 import numpy as np
@@ -114,7 +113,6 @@ class Discriminator(Model):
         dis_out = self.flatten(self.leakyrelu(self.one_conv(dis_out)))
         logits = self.dis_fully(dis_out)
 
-        logits = sigmoid(logits)
         return logits
 
     def save_optimizer_state(self, optimizer, save_path, save_name):

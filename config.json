@@ -12,15 +12,15 @@
   "default_float" : "float32",
 
   "save_check_point_period" : 100,
-  "load_generator_check_point_name" : "",
-  "save_generator_check_point_name" : "SEGAN_Generator_0717_evening",
-  "load_discriminator_check_point_name" : "",
-  "save_discriminator_check_point_name" : "SEGAN_Discriminator_0717_evening",
+  "load_generator_check_point_name" : "SEGAN_Generator_0719_100",
+  "save_generator_check_point_name" : "SEGAN_Generator_0719",
+  "load_discriminator_check_point_name" : "SEGAN_Discriminator_0719_100",
+  "save_discriminator_check_point_name" : "SEGAN_Discriminator_0719",
 
-  "training_source_path"  : "./data/train_woman_data/train_woman_15min_cut_noise.wav",
-  "training_target_path"  : "./data/train_woman_data/train_woman_15min_cut_clean.wav",
+  "training_source_path"  : "./data/train_woman_data/noise",
+  "training_target_path"  : "./data/train_woman_data/clean",
 
-  "test_source_path"  : "./data/train_woman_data/train_woman_15min_cut_noise.wav",
+  "test_source_path"  : "./data/test_woman_data",
 
   "generator_plot_file" : "generator.plot",
   "discriminator_plot_file" : "discriminator.plot",
