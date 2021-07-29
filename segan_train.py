@@ -104,14 +104,18 @@ train_l1_norm = tf.keras.metrics.Mean(name='train_l1_norm')
 
 @tf.function
 def d_loss(r_logit, f_logit):
-    r_loss = mse(r_logit, tf.ones_like(r_logit))      # E[(D(x, x_c) - 1) ** 2]/2
-    f_loss = mse(f_logit, tf.zeros_like(f_logit))     # E[(D(G(z, x_c), x_c)) ** 2]/2
-    return (r_loss + f_loss) / 2
+    # r_loss = mse(r_logit, tf.ones_like(r_logit))      # E[(D(x, x_c) - 1) ** 2]/2
+    r_loss = tf.math.reduce_mean(tf.math.squared_difference(r_logit, 1.))
+    # f_loss = mse(f_logit, tf.zeros_like(f_logit))     # E[(D(G(z, x_c), x_c)) ** 2]/2
+    f_loss = tf.math.reduce_mean(tf.math.squared_difference(f_logit, 0.))
+    return r_loss + f_loss
 
 @tf.function
 def g_loss(f_logit, G_logits, x):
-    f_loss = mse(f_logit, tf.ones_like(f_logit)) / 2     # E[(D(G(z, x_c), x_c) - 1) ** 2]/2
-    norm = lamda * mae(G_logits, tf.squeeze(x))
+    # f_loss = mse(f_logit, tf.ones_like(f_logit))     # E[(D(G(z, x_c), x_c) - 1) ** 2]/2
+    f_loss = tf.math.reduce_mean(tf.math.squared_difference(f_logit, 1.))
+    # norm = lamda * mae(G_logits, tf.squeeze(x))
+    norm = lamda * tf.math.reduce_mean(tf.math.abs(tf.math.subtract(G_logits, tf.squeeze(x))))
     return f_loss + norm, f_loss, norm
 
 @tf.function
@@ -168,14 +172,8 @@ for epoch in range(saved_epoch, saved_epoch+epochs):
     flag, count = 0, 0
     for noise_audio, clean_audio in train_dataset:
         print("\rTrain : epoch {}/{}, training {}/{}".format(epoch + 1, saved_epoch+epochs, i + 1, math.ceil(num_of_total_frame / batch_size)), end='')
-        # d_train_step(clean_audio, noise_audio)
-        # g_train_step(clean_audio, noise_audio)
-        if flag == 0:
-            d_train_step(clean_audio, noise_audio)
-            count += 1
-        if count == 5:
-            g_train_step(clean_audio, noise_audio)
-            flag, count = 0, 0
+        d_train_step(clean_audio, noise_audio)
+        g_train_step(clean_audio, noise_audio)
         i += 1
 
     print(" | loss : {}".format(generator_train_loss.result()), " | Processing time :", datetime.timedelta(seconds=time.time() - start), end='')
